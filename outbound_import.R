@@ -8,14 +8,14 @@ library(plotly)
 library(zoo)
 
 
-##¸ô®|³]©w
+##è·¯å¾‘è¨­å®š
 dir = "~"
 setwd(dir)
 
-##Åª¨úÀÉ®×
+##è®€å–æª”æ¡ˆ
 file.list <- list.files(pattern="*.xls")
 
-##¸ê®ÆÅª¨ú¤Î¹w¥ı³B²z(¥h°£NA¡B¤£»İ­nÂø¶µ)
+##è³‡æ–™è®€å–åŠé å…ˆè™•ç†(å»é™¤NAã€ä¸éœ€è¦é›œé …)
 DailyImmigPosAll <- lapply(file.list, function(DailyImmigPosAll){
   DailyImmigPosAll <- read.xlsx2(DailyImmigPosAll, sheetIndex=1, startRow = 6)
   colname_ch <- colnames(DailyImmigPosAll[1:15])
@@ -23,111 +23,111 @@ DailyImmigPosAll <- lapply(file.list, function(DailyImmigPosAll){
   DailyImmigPosAll <- DailyImmigPosAll %>% drop_na()
 })
 
-##¹LÂoÁ`µ²¦C 
+##éæ¿¾ç¸½çµåˆ— 
 DailyImmigPosAll_final_version <- do.call(rbind.data.frame, DailyImmigPosAll) %>% unique()
 
-#¦~½u¤J¹Ò
-DailyImmigPosAll_final_version_year  <- DailyImmigPosAll_final_version %>% filter(., ¤J¥X¹Ò¤é´Á>2000     & ¤J¥X¹Ò¤é´Á<9999) 
-DailyImmigPosAll_final_version_year$¤J¥X¹Ò¤é´Á <- DailyImmigPosAll_final_version_year$¤J¥X¹Ò¤é´Á %>% as.character()
-DailyImmigPosAll_final_version_year$¤J¥X¹Ò¤é´Á <- as.Date(ISOdate(DailyImmigPosAll_final_version_year$¤J¥X¹Ò¤é´Á, 12, 31)) %>% as.yearmon() %>% format("%Y")
+#å¹´ç·šå…¥å¢ƒ
+DailyImmigPosAll_final_version_year  <- DailyImmigPosAll_final_version %>% filter(., in_date>2000     & in_date<9999) 
+DailyImmigPosAll_final_version_year$in_out_date <- DailyImmigPosAll_final_version_year$in_out_date %>% as.character()
+DailyImmigPosAll_final_version_year$in_out_date <- as.Date(ISOdate(DailyImmigPosAll_final_version_year$in_out_date, 12, 31)) %>% as.yearmon() %>% format("%Y")
 fig_year<- plot_ly(DailyImmigPosAll_final_version_year, type = 'scatter', mode = 'lines+markers', autosize = T) %>% 
-  add_trace(x = ~¤J¥X¹Ò¤é´Á, y = ~¤J¹Ò.¦X­p, name = '¦~½u¤J¹Ò') %>% 
-  add_trace(x = ~¤J¥X¹Ò¤é´Á, y = ~¥X¹Ò.¦X­p, name = '¦~½u¥X¹Ò') %>%
+  add_trace(x = ~in_out_date, y = ~in_total, name = 'å¹´ç·šå…¥å¢ƒ') %>% 
+  add_trace(x = ~in_out_date, y = ~out_total, name = 'å¹´ç·šå‡ºå¢ƒ') %>%
   layout(
-    title = list(text ='¤¤¥~¤H¤h¤J¥X¹Ò²Î­pªí¤J¹Ò¤H¼Æ',
+    title = list(text ='ä¸­å¤–äººå£«å…¥å‡ºå¢ƒçµ±è¨ˆè¡¨å…¥å¢ƒäººæ•¸',
                  y = 0.99),
     xaxis = list(
-      title = "¤J¥X¹Ò®É¶¡",
+      title = "å…¥å‡ºå¢ƒæ™‚é–“",
       tickformat = "%Y%m%d",
       date_breaks = '14 days'
     ),
     yaxis = list(
-      title = '¤J¥X¹Ò¤H¼Æ',
-      range = c(0, max(DailyImmigPosAll_final_version_year$¤J¹Ò.¦X­p,DailyImmigPosAll_final_version_year$¥X¹Ò.¦X­p))
+      title = 'å…¥å‡ºå¢ƒäººæ•¸',
+      range = c(0, max(DailyImmigPosAll_final_version_year$in_total,DailyImmigPosAll_final_version_year$å‡ºå¢ƒ.åˆè¨ˆ))
     ),
     plot_bgcolor = "#e5ecf6"
   )
 
-#¤ë½u
-DailyImmigPosAll_final_version_month <- DailyImmigPosAll_final_version %>% filter(., ¤J¥X¹Ò¤é´Á>200001   & ¤J¥X¹Ò¤é´Á<999999)
-DailyImmigPosAll_final_version_month$¤J¥X¹Ò¤é´Á <- DailyImmigPosAll_final_version_month$¤J¥X¹Ò¤é´Á %>% as.character() %>% as.yearmon(.,"%Y%m") %>% as.Date()
+#æœˆç·š
+DailyImmigPosAll_final_version_month <- DailyImmigPosAll_final_version %>% filter(., in_out_date>200001   & in_out_date<999999)
+DailyImmigPosAll_final_version_month$in_out_date <- DailyImmigPosAll_final_version_month$in_out_date %>% as.character() %>% as.yearmon(.,"%Y%m") %>% as.Date()
 fig_month<- plot_ly(DailyImmigPosAll_final_version_month, type = 'scatter', mode = 'lines+markers', autosize = T) %>% 
-  add_trace(x = ~¤J¥X¹Ò¤é´Á, y = ~¤J¹Ò.¦X­p, name = '¤ë½u¤J¹Ò') %>%
-  add_trace(x = ~¤J¥X¹Ò¤é´Á, y = ~¥X¹Ò.¦X­p, name = '¤ë½u¥X¹Ò') %>% 
+  add_trace(x = ~in_out_date, y = ~in_total, name = 'æœˆç·šå…¥å¢ƒ') %>%
+  add_trace(x = ~in_out_date, y = ~out_total, name = 'æœˆç·šå‡ºå¢ƒ') %>% 
   layout(
-    title = list(text ='¤¤¥~¤H¤h¤J¥X¹Ò²Î­pªí¤J¹Ò¤H¼Æ',
+    title = list(text ='ä¸­å¤–äººå£«å…¥å‡ºå¢ƒçµ±è¨ˆè¡¨å…¥å¢ƒäººæ•¸',
                  y = 0.99),    
     xaxis = list(
-      title = "¤J¥X¹Ò®É¶¡",
+      title = "å…¥å‡ºå¢ƒæ™‚é–“",
       tickformat = "%Y%m"
     ),
       yaxis = list(
-      title = '¤J¥X¹Ò¤H¼Æ',
-      range = c(0, max(DailyImmigPosAll_final_version_month$¤J¹Ò.¦X­p,DailyImmigPosAll_final_version_month$¥X¹Ò.¦X­p))
+      title = 'å…¥å‡ºå¢ƒäººæ•¸',
+      range = c(0, max(DailyImmigPosAll_final_version_month$in_total,DailyImmigPosAll_final_version_month$å‡ºå¢ƒ.åˆè¨ˆ))
     ),
     plot_bgcolor = "#e5ecf6"
   )
 
-#¤é½u
-DailyImmigPosAll_final_version_day   <- DailyImmigPosAll_final_version %>% filter(., ¤J¥X¹Ò¤é´Á>20000000 & ¤J¥X¹Ò¤é´Á<99999999)
-DailyImmigPosAll_final_version_day$¤J¥X¹Ò¤é´Á <- DailyImmigPosAll_final_version_day$¤J¥X¹Ò¤é´Á %>% as.character() %>% as.Date(., format("%Y%m%d"))
+#æ—¥ç·š
+DailyImmigPosAll_final_version_day   <- DailyImmigPosAll_final_version %>% filter(., in_out_date>20000000 & in_out_date<99999999)
+DailyImmigPosAll_final_version_day$in_out_date <- DailyImmigPosAll_final_version_day$in_out_date %>% as.character() %>% as.Date(., format("%Y%m%d"))
 
 fig_date<- plot_ly(DailyImmigPosAll_final_version_day, type = 'scatter', mode = 'lines', autosize = T) %>% 
-  add_trace(x = ~¤J¥X¹Ò¤é´Á, y = ~¤J¹Ò.¦X­p, name = '¤é½u¤J¹Ò') %>% 
-  add_trace(x = ~¤J¥X¹Ò¤é´Á, y = ~¥X¹Ò.¦X­p, name = '¤é½u¥X¹Ò') %>%
-  add_trace(x = ~¤J¥X¹Ò¤é´Á, y = ~(rollmeanr(¤J¹Ò.¦X­p, 7, fill = NA)), name = 'MA7_import', line = list(color = "blue")) %>%
-  add_trace(x = ~¤J¥X¹Ò¤é´Á, y = ~(rollmeanr(¥X¹Ò.¦X­p, 7, fill = NA)), name = 'MA7_Outbound', line = list(color = "red")) %>%
+  add_trace(x = ~in_out_date, y = ~in_total, name = 'æ—¥ç·šå…¥å¢ƒ') %>% 
+  add_trace(x = ~in_out_date, y = ~out_total, name = 'æ—¥ç·šå‡ºå¢ƒ') %>%
+  add_trace(x = ~in_out_date, y = ~(rollmeanr(in_total, 7, fill = NA)), name = 'MA7_import', line = list(color = "blue")) %>%
+  add_trace(x = ~in_out_date, y = ~(rollmeanr(å‡ºå¢ƒ.åˆè¨ˆ, 7, fill = NA)), name = 'MA7_Outbound', line = list(color = "red")) %>%
   layout(
-    title = list(text ='¤¤¥~¤H¤h¤J¥X¹Ò²Î­pªí¤J¹Ò¤H¼Æ',
+    title = list(text ='ä¸­å¤–äººå£«å…¥å‡ºå¢ƒçµ±è¨ˆè¡¨å…¥å¢ƒäººæ•¸',
                  y = 0.99),  
     xaxis = list( 
-      title = "¤J¥X¹Ò®É¶¡",
+      title = "å…¥å‡ºå¢ƒæ™‚é–“",
       tickangle=45,
       tickformat = "%Y%m%d"
       ),
       yaxis = list(
-      title = '¤J¥X¹Ò¤H¼Æ',
-      range = c(0, max(DailyImmigPosAll_final_version_day$¤J¹Ò.¦X­p,DailyImmigPosAll_final_version_day$¥X¹Ò.¦X­p))
+      title = 'å…¥å‡ºå¢ƒäººæ•¸',
+      range = c(0, max(DailyImmigPosAll_final_version_day$in_total,DailyImmigPosAll_final_version_day$out_total))
     ),
     plot_bgcolor = "#e5ecf6"
   )
 
 
-#################¥[¤J¶g§O
-weekdate<- read.csv("V:/Rserver/²¾¥Á¸p¤J¥X¹Ò¤H¼Æ/WEEKDATE.csv", colClasses = c("Date","character")) %>%
+#################åŠ å…¥é€±åˆ¥
+weekdate<- read.csv("V:/Rserver/ç§»æ°‘ç½²å…¥å‡ºå¢ƒäººæ•¸/WEEKDATE.csv", colClasses = c("Date","character")) %>%
   filter(between(date,as.Date("2017-01-01"),Sys.Date())) 
-colnames(weekdate) <- c("¤J¥X¹Ò¤é´Á","¦~¶g")
+colnames(weekdate) <- c("in_out_date","weekdate")
 
-DailyImmigPosAll_final_version_day_week <- left_join(DailyImmigPosAll_final_version_day, weekdate, by="¤J¥X¹Ò¤é´Á") %>% group_by(¦~¶g) %>% summarise(¤J¹Ò.¦X­p = sum(¤J¹Ò.¦X­p),
-                                                                                                     ¥X¹Ò.¦X­p = sum(¥X¹Ò.¦X­p)) %>% as.data.frame()
+DailyImmigPosAll_final_version_day_week <- left_join(DailyImmigPosAll_final_version_day, weekdate, by="in_out_date") %>% group_by(weekdate) %>% summarise(in_total = sum(in_total),
+                                                                                                     out_total = sum(out_total)) %>% as.data.frame()
 fig_week<- plot_ly(DailyImmigPosAll_final_version_day_week, type = 'scatter', mode = 'lines', autosize = T) %>% 
-  add_trace(x = ~¦~¶g, y = ~¤J¹Ò.¦X­p, name = '¶g½u¤J¹Ò') %>% 
-  add_trace(x = ~¦~¶g, y = ~¥X¹Ò.¦X­p, name = '¶g½u¥X¹Ò') %>%
+  add_trace(x = ~weekdate, y = ~in_total, name = 'é€±ç·šå…¥å¢ƒ') %>% 
+  add_trace(x = ~weekdate, y = ~out_total, name = 'é€±ç·šå‡ºå¢ƒ') %>%
   layout(
-    title = list(text ='¤¤¥~¤H¤h¤J¥X¹Ò²Î­pªí¤J¹Ò¤H¼Æ',
+    title = list(text ='ä¸­å¤–äººå£«å…¥å‡ºå¢ƒçµ±è¨ˆè¡¨å…¥å¢ƒäººæ•¸',
                  y = 0.99),  
     xaxis = list( 
-      title = "¤J¥X¹Ò®É¶¡",
+      title = "å…¥å‡ºå¢ƒæ™‚é–“",
       tickangle=90,
       type='category'
     ),
     yaxis = list(
-      title = '¤J¥X¹Ò¤H¼Æ',
-      range = c(0, max(DailyImmigPosAll_final_version_day_week$¤J¹Ò.¦X­p,DailyImmigPosAll_final_version_day_week$¥X¹Ò.¦X­p))
+      title = 'å…¥å‡ºå¢ƒäººæ•¸',
+      range = c(0, max(DailyImmigPosAll_final_version_day_week$in_total,DailyImmigPosAll_final_version_day_week$out_total))
     ),
     plot_bgcolor = "#e5ecf6"
   )
 
-##¦sÀÉ
+##å­˜æª”
 path = paste0("~")
-write.xlsx(DailyImmigPosAll_final_version_year, path, row.names = FALSE, sheetName = "¦~¸ê®Æ")
-write.xlsx(DailyImmigPosAll_final_version_month, path, row.names = FALSE, sheetName = "¤ë¸ê®Æ", append=TRUE)
-write.xlsx(DailyImmigPosAll_final_version_day, path, row.names = FALSE, sheetName = "¤é¸ê®Æ", append=TRUE)
-write.xlsx(DailyImmigPosAll_final_version_day_week, path, row.names = FALSE, sheetName = "¶g¸ê®Æ", append=TRUE)
-saveWidget(fig_year, "~", selfcontained = F, libdir = "¥~³¡µ{¦¡")
-saveWidget(fig_month, "~", selfcontained = F, libdir = "¥~³¡µ{¦¡")
-saveWidget(fig_date, "~", selfcontained = F, libdir = "¥~³¡µ{¦¡")
-saveWidget(fig_week, "~", selfcontained = F, libdir = "¥~³¡µ{¦¡")
+write.xlsx(DailyImmigPosAll_final_version_year, path, row.names = FALSE, sheetName = "å¹´è³‡æ–™")
+write.xlsx(DailyImmigPosAll_final_version_month, path, row.names = FALSE, sheetName = "æœˆè³‡æ–™", append=TRUE)
+write.xlsx(DailyImmigPosAll_final_version_day, path, row.names = FALSE, sheetName = "æ—¥è³‡æ–™", append=TRUE)
+write.xlsx(DailyImmigPosAll_final_version_day_week, path, row.names = FALSE, sheetName = "é€±è³‡æ–™", append=TRUE)
+saveWidget(fig_year, "~", selfcontained = F, libdir = "å¤–éƒ¨ç¨‹å¼")
+saveWidget(fig_month, "~", selfcontained = F, libdir = "å¤–éƒ¨ç¨‹å¼")
+saveWidget(fig_date, "~", selfcontained = F, libdir = "å¤–éƒ¨ç¨‹å¼")
+saveWidget(fig_week, "~", selfcontained = F, libdir = "å¤–éƒ¨ç¨‹å¼")
 
 
 

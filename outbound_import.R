@@ -43,7 +43,7 @@ fig_year<- plot_ly(DailyImmigPosAll_final_version_year, type = 'scatter', mode =
     ),
     yaxis = list(
       title = '入出境人數',
-      range = c(0, max(DailyImmigPosAll_final_version_year$in_total,DailyImmigPosAll_final_version_year$出境.合計))
+      range = c(0, max(DailyImmigPosAll_final_version_year$in_total,DailyImmigPosAll_final_version_year$out_total))
     ),
     plot_bgcolor = "#e5ecf6"
   )
@@ -76,7 +76,7 @@ fig_date<- plot_ly(DailyImmigPosAll_final_version_day, type = 'scatter', mode = 
   add_trace(x = ~in_out_date, y = ~in_total, name = '日線入境') %>% 
   add_trace(x = ~in_out_date, y = ~out_total, name = '日線出境') %>%
   add_trace(x = ~in_out_date, y = ~(rollmeanr(in_total, 7, fill = NA)), name = 'MA7_import', line = list(color = "blue")) %>%
-  add_trace(x = ~in_out_date, y = ~(rollmeanr(出境.合計, 7, fill = NA)), name = 'MA7_Outbound', line = list(color = "red")) %>%
+  add_trace(x = ~in_out_date, y = ~(rollmeanr(out_total, 7, fill = NA)), name = 'MA7_Outbound', line = list(color = "red")) %>%
   layout(
     title = list(text ='中外人士入出境統計表入境人數',
                  y = 0.99),  
